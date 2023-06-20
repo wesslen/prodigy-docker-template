@@ -25,25 +25,25 @@ git clone https://github.com/wesslen/prodigy-docker-templates
 
 Depending on your OS, run:
 
-## Windows
+**Windows**
 
 ```
 docker build --platform=windows/amd64 -t prodigy-docker . 
 ```
 
-## M1 Mac
+**M1 Mac**
 
 ```
 docker build --platform=linux/arm64 -t prodigy-docker . 
 ```
 
-## Intel Mac
+**Intel Mac**
 
 ```
 docker build --platform=darwin/amd64 -t prodigy-docker . 
 ```
 
-## Linux
+**Linux**
 
 ```
 docker build --platform=linux/amd64 -t prodigy-docker . 

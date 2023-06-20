@@ -6,12 +6,11 @@ We recommend installing [Docker Desktop](https://www.docker.com/products/docker-
 
 # Local setup
 
-1. Clone the appropriate branch of this repo.
+1. Clone this repo:
 
-- **Mac M1** : `git clone -b m1-mac https://github.com/wesslen/prodigy-docker-templates`
-- **Mac Intel** : `git clone -b mac-intel https://github.com/intel-mac wesslen/prodigy-docker-templates`
-- **Windows** : `git clone -b windows https://github.com/windows wesslen/prodigy-docker-templates`
-- **Linux** : `git clone -b linux https://github.com/linux wesslen/prodigy-docker-templates`
+```
+git clone https://github.com/wesslen/prodigy-docker-templates
+```
 
 2. Create a `.env` file with your `PRODIGY_KEY`. You will need a Prodigy license key, see [docs](https://prodi.gy/docs/install) for details.
 
@@ -24,8 +23,30 @@ We recommend installing [Docker Desktop](https://www.docker.com/products/docker-
 
 4. Build:
 
+Depending on your OS, run:
+
+## Windows
+
 ```
-docker build -t prodigy-docker . 
+docker build --platform=windows/amd64 -t prodigy-docker . 
+```
+
+## M1 Mac
+
+```
+docker build --platform=darwin/arm64 -t prodigy-docker . 
+```
+
+## Intel Mac
+
+```
+docker build --platform=darwin/amd64 -t prodigy-docker . 
+```
+
+## Linux
+
+```
+docker build --platform=linux/amd64 -t prodigy-docker . 
 ```
 
 5. Run

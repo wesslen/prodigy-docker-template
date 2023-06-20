@@ -1,18 +1,28 @@
-# Prodigy Docker Templates
+# Prodigy Docker for Digital Ocean Deployment
 
-Docker templates for running Prodigy locally. This repo can be extended to run Prodigy on a cloud. For more details, read [Prodigy's deployment docs](https://prodi.gy/docs/deployment).
+Docker template for running Prodigy on Digital Ocean, using a Digital Ocean hosted PostgreSQL database. This repo follows along with [Prodigy's deployment docs](https://prodi.gy/docs/deployment.md#example-docker-on-digital-ocean-digital-ocean).
 
 We recommend installing [Docker Desktop](https://www.docker.com/products/docker-desktop/), which can help managing images/containers, viewing logs, and easier start/run/close of containers.
 
-# Local setup
+# Setup
 
 1. Clone this repo:
 
 ```
-git clone https://github.com/wesslen/prodigy-docker-templates
+git clone -b digital-ocean https://github.com/wesslen/prodigy-docker-templates
 ```
 
-2. Create a `.env` file with your `PRODIGY_KEY`. You will need a Prodigy license key, see [docs](https://prodi.gy/docs/install) for details.
+2. Create a `.env` file with your `PRODIGY_KEY` and PostgreSQL DB details. You will need a Prodigy license key, see [docs](https://prodi.gy/docs/install) for details. For PostgreSQL, this example uses a Digital Ocean hosted database; although, you can replace the `.env` with another hosted database instead.
+
+```
+# .env
+PRODIGY_KEY=1234-5678-ABCD-DEFG
+POSTGRES_USER=doadmin
+POSTGRES_PWD=***
+POSTGRES_HOST=db-postgres-prodigy-do-user-243383-0.b.db.ondigitalocean.com
+POSTGRES_PORT=25060
+POSTGRES_DB_NAME=defaultdb
+```
 
 3. Modify `requirements.txt`, `run.sh`, `prodigy.json`, and `Dockerfile`:
 
@@ -23,72 +33,29 @@ git clone https://github.com/wesslen/prodigy-docker-templates
 
 4. Build:
 
-Depending on your OS, run:
-
-## Windows
+This is built for Digital Ocean, not to run locally. 
 
 ```
-docker build --platform=windows/amd64 -t prodigy-docker . 
+docker build --progress=plain -t prodigy-docker-postgres .
 ```
 
-## M1 Mac
+5. Login, tag and push
+
+See [this for more details](https://docs.digitalocean.com/products/container-registry/quickstart/#manage-images).
 
 ```
-docker build --platform=darwin/arm64 -t prodigy-docker . 
+# if it's your first time, create a registry
+doctl registry login
+# assumes you have created a registry: ryan-prodigy
+# need to use a different name for your registry
+docker tag prodigy-docker-postgres registry.digitalocean.com/ryan-prodigy/prodigy-docker-postgres
+docker push registry.digitalocean.com/ryan-prodigy/prodigy-docker-postgres
 ```
 
-## Intel Mac
+6. Create your app
 
-```
-docker build --platform=darwin/amd64 -t prodigy-docker . 
-```
+Follow [these instructions](https://prodi.gy/docs/deployment.md#deploying) to create your own app based on your registry in Digital Ocean.
 
-## Linux
+7. Shut down 
 
-```
-docker build --platform=linux/amd64 -t prodigy-docker . 
-```
-
-5. Run
-
-```
-docker run -p 8080:8080 prodigy-docker
-```
-
-6. Open Prodigy and annotate:
-
-* Go to browser: `0.0.0.0:8080`
-* If basic authentication is enabled (which is default for the `Dockerfile`), provide the `user` and `pass`. By default, this is specified in the `Dockerfile`; however, you likely may want to specify these environment variables in an alternative setup.
-* If `PRODIGY_ALLOWED_SESSIONS` is set (which is by default), you'll need to extend the url to `?session=[an allowed username]` for example `0.0.0.0:8080?session=user1`. If you do not, you'll see a `ERROR: Can't fetch project. Make sure the server is running correctly.` in Prodigy.
-
-7. Shut down your container
-
-Open a new terminal and view any running containers:
-
-```
-$ docker ps
-CONTAINER ID   IMAGE            COMMAND         CREATED         STATUS         PORTS                    NAMES
-9a153cbfbd12   prodigy-docker   "bash run.sh"   8 seconds ago   Up 8 seconds   0.0.0.0:8080->8080/tcp   infallible_ishizaka
-```
-
-Run `docker stop` with the `CONTAINER ID`:
-
-```
-$ docker stop 9a153cbfbd12  
-9a153cbfbd12
-```
-
-Alternatively, you can use Docker Desktop too. 
-
-# Troubleshooting
-
-> `[Errno 99] error while attempting to bind on address ('::1', 8080, 0, 0): cannot assign requested address`
-
-There's two possibilities. First, make sure that your host is `0.0.0.0`. This is included in the default `prodigy.json`. See [this docs post](https://prodi.gy/docs/install#install-docker) or [this blog](https://pythonspeed.com/articles/docker-connection-refused/) for more details.
-
-A second possibility is that there is another process running on port `8080`. For this, you'll need to modify your ports such that (for example, let's change to `8081`):
-
-- Add `ENV PRODIGY_PORT 8081` in `Dockerfile`
-- Modify `EXPOSE 8080` to `EXPOSE 8081` (Make sure to rebuild your image!)
-- When running, use the command: `docker run -p 8080:8080 prodigy-docker`
-- Now go to `0.0.0.0:8081` in a browser
+Make sure to delete your app, registry (if necessary), and PostgreSQL hosted database. If you don't, you'll continue to incur charges.

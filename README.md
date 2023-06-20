@@ -34,7 +34,7 @@ docker build --platform=windows/amd64 -t prodigy-docker .
 ## M1 Mac
 
 ```
-docker build --platform=darwin/arm64 -t prodigy-docker . 
+docker build --platform=linux/arm64 -t prodigy-docker . 
 ```
 
 ## Intel Mac

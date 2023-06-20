@@ -1,6 +1,6 @@
 # Prodigy Docker Templates
 
-Docker templates for running Prodigy locally. This repo can be extended to run Prodigy on a cloud. For more details, read [Prodigy's deployment docs](https://prodi.gy/docs/deployment).
+Docker templates for running Prodigy locally. This repo can be extended to run Prodigy on a cloud -- see the `digital-ocean` branch for an example. For more details, read [Prodigy's deployment docs](https://prodi.gy/docs/deployment).
 
 We recommend installing [Docker Desktop](https://www.docker.com/products/docker-desktop/), which can help managing images/containers, viewing logs, and easier start/run/close of containers.
 

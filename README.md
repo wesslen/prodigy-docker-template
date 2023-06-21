@@ -90,5 +90,5 @@ A second possibility is that there is another process running on port `8080`. Fo
 
 - Add `ENV PRODIGY_PORT 8081` in `Dockerfile`
 - Modify `EXPOSE 8080` to `EXPOSE 8081` (Make sure to rebuild your image!)
-- When running, use the command: `docker run -p 8080:8080 prodigy-docker`
+- When running, use the command: `docker run -p 8081:8081 prodigy-docker`
 - Now go to `0.0.0.0:8081` in a browser
